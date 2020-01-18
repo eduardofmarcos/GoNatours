@@ -1,5 +1,12 @@
 const Tour = require('./../models/tourModel');
 
+exports.aliasTopTours = (req, res, next) => {
+  req.query.limit = 5;
+  req.query.sort = '-ratingsAverage, price';
+  req.query.fields = 'name, price, ratingsAverage, difficulty';
+  next();
+};
+
 exports.getAllTours = async (req, res) => {
   try {
     /****build the query****/
@@ -43,6 +50,20 @@ exports.getAllTours = async (req, res) => {
       queryFromMongoose = queryFromMongoose.select(newFields);
     } else {
       queryFromMongoose = queryFromMongoose.select('-__v'); //minus exclude instead include
+    }
+
+    // 5) pagination
+
+    const page = req.query.page * 1 || 1;
+    const limit = req.query.limit * 1 || 100;
+    const skip = (page - 1) * limit;
+
+    queryFromMongoose = queryFromMongoose.skip(skip).limit(limit);
+
+    if (req.query.page) {
+      const numTours = await Tour.countDocuments();
+      console.log(numTours);
+      if (skip >= numTours) throw new Error('This page does not exist');
     }
 
     /****execute the query****/
