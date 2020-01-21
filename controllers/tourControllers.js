@@ -1,4 +1,5 @@
 const Tour = require('./../models/tourModel');
+const APIFeatures = require('./utils/apiFeatures');
 
 exports.aliasTopTours = (req, res, next) => {
   req.query.limit = 5;
@@ -9,65 +10,14 @@ exports.aliasTopTours = (req, res, next) => {
 
 exports.getAllTours = async (req, res) => {
   try {
-    /****build the query****/
-    //1) - filtering
-    let queryClient = { ...req.query }; //copy into a new Object
-    const excludeFields = ['page', 'fields', 'limit', 'sort'];
+    const features = new APIFeatures(Tour.find(), req.query) //this is where the querie from mongoose comes//
+      .filter()
+      .sort()
+      .limitFields()
+      .paginate();
 
-    excludeFields.forEach(el => {
-      if (el in queryClient) {
-        delete queryClient[el];
-      }
-    });
-
-    //2) - advanced filtering
-    let stringQuery = JSON.stringify(queryClient);
-
-    stringQuery = stringQuery.replace(
-      /\b(gte|gt|lte|lt)\b/g,
-      match => `$${match}`
-    );
-    queryClient = JSON.parse(stringQuery);
-
-    //3) - sorting - Ordenando
-    let queryFromMongoose = Tour.find(queryClient); // retorna uma querie(um objeto"promise" do mongoose). Para achar, usamos a requisiçao do cliente
-
-    if (req.query.sort) {
-      let newReqQuery;
-      //se tiver na requisição do cliente sort
-      if (req.query.sort.includes(',')) {
-        newReqQuery = req.query.sort.replace(/,/g, ' ');
-        queryFromMongoose = queryFromMongoose.sort(newReqQuery);
-      }
-      queryFromMongoose = queryFromMongoose.sort(req.query.sort); // conseguimos usar esse outro metodo justamente por, estarmos trabalhando com uma querie encadenada, e o sort, retorna outra querie
-    } else {
-      queryFromMongoose.sort('-createdAt');
-    }
-
-    // 4) field limits
-    if (req.query.fields) {
-      const newFields = req.query.fields.split(',').join(' ');
-      queryFromMongoose = queryFromMongoose.select(newFields);
-    } else {
-      queryFromMongoose = queryFromMongoose.select('-__v'); //minus exclude instead include
-    }
-
-    // 5) pagination
-
-    const page = req.query.page * 1 || 1;
-    const limit = req.query.limit * 1 || 100;
-    const skip = (page - 1) * limit;
-
-    queryFromMongoose = queryFromMongoose.skip(skip).limit(limit);
-
-    if (req.query.page) {
-      const numTours = await Tour.countDocuments();
-      console.log(numTours);
-      if (skip >= numTours) throw new Error('This page does not exist');
-    }
-
-    /****execute the query****/
-    const allTours = await queryFromMongoose; //entramos com uma querie no await, para pegarmos os resultados, e ele retorna outra querie/promise com resolve ou reject
+    //console.log(features.query);
+    const allTours = await features.query; //entramos com uma querie no await, para pegarmos os resultados, e ele retorna outra querie/promise com resolve ou reject
 
     /****responses****/
 
