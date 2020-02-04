@@ -5,7 +5,8 @@
   "main": "app.js",
   "scripts": {
     "start:dev": "nodemon server.js",
-    "start:prod": "NODE_ENV=production nodemon server.js"
+    "start:prod": "NODE_ENV=production nodemon server.js",
+    "debug": "ndb server.js"
   },
   "author": "Eduardo Marcos/ Jonas Schmedtmann",
   "license": "ISC",
@@ -14,6 +15,7 @@
     "express": "^4.17.1",
     "mongoose": "^5.8.4",
     "morgan": "^1.9.1",
+    "ndb": "^1.1.5",
     "slugify": "^1.3.6",
     "validator": "^12.2.0"
   },
