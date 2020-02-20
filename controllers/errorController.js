@@ -12,6 +12,12 @@ const handleDuplicateErrorDB = err => {
   return new AppError(message, 400);
 };
 
+const handleValidationErrorDB = err => {
+  const msgErrorArray = Object.values(err.errors).map(el => el.message);
+  const message = `Invalid fields ${msgErrorArray.join('. ')}`;
+  return new AppError(message, 400);
+};
+
 /* eslint-disable no-else-return */
 const sendErrDev = (err, res) => {
   return res.status(err.statusCode).json({
@@ -24,7 +30,7 @@ const sendErrDev = (err, res) => {
 
 const sendErrProd = (err, res) => {
   //operation trusted error: send the message to the client
-  console.log(err);
+  //console.log(err);
   if (err.isOperational) {
     return res.status(err.statusCode).json({
       status: err.status,
@@ -55,8 +61,11 @@ module.exports = (err, req, res, next) => {
   }
   if (process.env.NODE_ENV === 'production') {
     let error = { ...err };
+    console.log(error.name);
     if (error.name === 'CastError') error = handleCastErrorDb(error);
     if (error.code === 11000) error = handleDuplicateErrorDB(error);
+    if (error.name === 'ValidationError')
+      error = handleValidationErrorDB(error);
     //console.log(error);
     sendErrProd(error, res);
   }
