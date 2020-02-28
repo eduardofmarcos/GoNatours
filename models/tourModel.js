@@ -117,8 +117,8 @@ tourSchema.pre(/^find/, function(next) {
 });
 
 tourSchema.post(/^find/, function(docs, next) {
-  console.log(`It tooks ${new Date() - this.start} miliseconds`);
-  console.log(docs);
+  //console.log(`It tooks ${new Date() - this.start} miliseconds`);
+  //console.log(docs);
   next();
 });
 
