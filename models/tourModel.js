@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const slugify = require('slugify');
 //const validator = require('validator');
+// const User = require('./userModel');
 
 const tourSchema = new mongoose.Schema(
   {
@@ -37,7 +38,7 @@ const tourSchema = new mongoose.Schema(
       required: [true, 'A tour must have a difficulty'],
       trim: true,
       enum: {
-        values: ['easy', 'medium', 'difficulty'],
+        values: ['easy', 'medium', 'difficult'],
         message: 'A tour must be only, easy, medium or difficulty'
       }
     },
@@ -78,7 +79,37 @@ const tourSchema = new mongoose.Schema(
     secretTours: {
       type: Boolean,
       default: false
-    }
+    },
+    startLocation: {
+      //GEOJson
+      types: {
+        type: String,
+        default: 'Point',
+        enum: ['Point']
+      },
+      coordinates: [Number],
+      address: String,
+      description: String
+    },
+    locations: [
+      {
+        type: {
+          type: String,
+          default: 'Point',
+          enum: ['Point']
+        },
+        coordinates: [Number],
+        address: String,
+        description: String,
+        day: String
+      }
+    ],
+    guides: [
+      {
+        type: mongoose.Schema.ObjectId,
+        ref: 'User'
+      }
+    ]
   },
   {
     toJSON: { virtuals: true },
@@ -96,6 +127,13 @@ tourSchema.pre('save', function(next) {
   this.slug = slugify(this.name, { lower: true });
   next();
 });
+
+//embedding guides on tour models
+// tourSchema.pre('save', async function(next) {
+//   const guidesPromises = this.guides.map(async id => await User.findById(id));
+//   this.guides = await Promise.all(guidesPromises);
+//   next();
+// });
 
 tourSchema.pre('save', function(next) {
   console.log('Saving the document...');
