@@ -1,7 +1,7 @@
 const catchAsync = require('./../utils/catchAsync');
-const APIFeatures = require('./../utils/apiFeatures');
 const User = require('./../models/userModel');
 const AppError = require('./../utils/appError');
+const factory = require('./../controllers/handlerFactory');
 
 const filterObj = (obj, ...allowedFields) => {
   const newObject = {};
@@ -11,6 +11,7 @@ const filterObj = (obj, ...allowedFields) => {
   return newObject;
 };
 
+//Current user**********************************************
 exports.updateMe = catchAsync(async (req, res, next) => {
   //1) create a error when a user post a password data
   if (req.body.password || req.body.confirmPassword)
@@ -43,40 +44,12 @@ exports.deleteMe = catchAsync(async (req, res, next) => {
   });
 });
 
-exports.getAllUsers = catchAsync(async (req, res, next) => {
-  const features = new APIFeatures(User.find(), req.query) //this is where the querie from mongoose comes//
-    .filter()
-    .sort()
-    .limitFields()
-    .paginate();
+//ADMIN USER FUNCTIONS*************************************************************
+exports.getAllUsers = factory.getAll(User);
 
-  //console.log(features.query);
-  const allUsers = await features.query; //entramos com uma querie no await, para pegarmos os resultados, e ele retorna outra querie/promise com resolve ou reject
+exports.getSingleUser = factory.getOne(User);
 
-  /****responses****/
-
-  res.status(200).json({
-    status: 'success',
-    timeAt: req.time,
-    results: allUsers.length,
-    data: {
-      allUsers
-    }
-  });
-});
-
-exports.getSingleUser = (req, res) => {
-  res.status(500).json({ message: 'to implement' });
-};
-
-exports.createUser = (req, res) => {
-  res.status(500).json({ message: 'to implement' });
-};
-
-exports.updateUser = (req, res) => {
-  res.status(500).json({ message: 'to implement' });
-};
-
-exports.deleteUser = (req, res) => {
-  res.status(500).json({ message: 'to implement' });
-};
+//DO NOT UPDATE PASSWORD IN THIS ROUTE!!!!.********** */
+exports.updateUser = factory.updateOne(User);
+//*************************************************** */
+exports.deleteUser = factory.deleteOne(User);

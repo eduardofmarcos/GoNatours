@@ -5,6 +5,7 @@ const authController = require('./../controllers/authController');
 //routes
 const router = express.Router();
 
+//Auth routes
 router.post('/signup', authController.signup);
 router.post('/login', authController.login);
 
@@ -16,13 +17,12 @@ router.patch(
   authController.updatePassword
 );
 
+//Current User
 router.patch('/updateme', authController.protect, userControllers.updateMe);
 router.delete('/deleteme', authController.protect, userControllers.deleteMe);
 
-router
-  .route('/')
-  .get(userControllers.getAllUsers)
-  .post(userControllers.createUser);
+//Admin privileges on User
+router.route('/').get(userControllers.getAllUsers);
 
 router
   .route('/:id')

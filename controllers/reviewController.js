@@ -1,37 +1,17 @@
 const Review = require('./../models/reviewModel');
-const catchAsync = require('./../utils/catchAsync');
-const AppError = require('./../utils/appError');
+const factory = require('./../controllers/handlerFactory');
 
-exports.createReview = catchAsync(async (req, res, next) => {
-  //
-
+exports.setTourUserIds = (req, res, next) => {
   if (!req.body.tour) req.body.tour = req.params.tourId;
   if (!req.body.user) req.body.user = req.user._id;
+  next();
+};
 
-  const newReview = await Review.create(req.body);
+exports.createReview = factory.createOne(Review);
 
-  res.status(200).json({
-    status: 'success',
-    data: newReview
-  });
-});
+exports.getAllReviews = factory.getAll(Review);
 
-exports.getAllReviews = catchAsync(async (req, res, next) => {
-  let filter = {};
+exports.GetSingleReview = factory.getOne(Review);
 
-  const tourCheck = await Review.findOne({ tour: req.params.tourId });
-
-  console.log(tourCheck);
-
-  if (!tourCheck) {
-    return next(new AppError('We couldnt find a tour with this Id!'));
-  }
-
-  if (req.params.tourId) filter = { tour: req.params.tourId };
-  const allReviews = await Review.find(filter);
-
-  res.status(200).json({
-    status: 'success',
-    data: allReviews
-  });
-});
+exports.updateReview = factory.updateOne(Review);
+exports.deleteReview = factory.deleteOne(Review);
