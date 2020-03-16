@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const Tour = require('./../models/tourModel');
 
 const reviewSchema = new mongoose.Schema(
   {
@@ -33,6 +34,8 @@ const reviewSchema = new mongoose.Schema(
   }
 );
 
+reviewSchema.index({ tour: 1, user: 1 }, { unique: true });
+
 reviewSchema.pre(/^find/, function(next) {
   //   this.populate({
   //     path: 'tour',
@@ -50,6 +53,56 @@ reviewSchema.pre(/^find/, function(next) {
   });
   next();
 });
+
+reviewSchema.statics.CalcAverageRatings = async function(tourId) {
+  //console.log('passou aqui');
+  //console.log(tourId);
+  const stats = await this.aggregate([
+    {
+      $match: { tour: tourId }
+    },
+    {
+      $group: {
+        _id: '$tour',
+        nRating: { $sum: 1 },
+        avgRating: { $avg: '$rating' }
+      }
+    }
+  ]);
+
+  if (stats.length > 0) {
+    await Tour.findByIdAndUpdate(tourId, {
+      ratingsAverage: stats[0].avgRating,
+      ratingsQuantity: stats[0].nRating
+    });
+  } else {
+    await Tour.findByIdAndUpdate(tourId, {
+      ratingsAverage: 0,
+      ratingsQuantity: 4.5
+    });
+  }
+
+  //console.log(stats);
+};
+
+reviewSchema.post('save', function() {
+  //this point to the current review
+  this.constructor.CalcAverageRatings(this.tour);
+});
+
+reviewSchema.pre(/^findOneAnd/, async function(next) {
+  //impossivel to use as above because "this" point to query and not document
+  this.r = await this.findOne(); //so we wait for save the document on database, find the document
+  //console.log(this.r); //this in the line above means we are passing the data from 'pre' to 'post' middleware and then we can retrieve the review document from 'this' variable
+  next();
+});
+
+reviewSchema.post(/^findOneAnd/, async function() {
+  //console.log('passou aqui, second middleware');
+  //await this.findOne() = we can not use here because the query is already executed!!
+  await this.r.constructor.CalcAverageRatings(this.r.tour); // then here, we can use the method 'calculate..., because "this" are point now to document"r", and not to query
+}); //query already executed
+
 const Review = mongoose.model('Review', reviewSchema);
 
 module.exports = Review;

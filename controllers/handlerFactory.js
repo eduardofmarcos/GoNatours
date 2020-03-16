@@ -82,6 +82,7 @@ exports.getAll = model =>
       .paginate();
 
     //console.log(features.query);
+    //const allDocs = await features.query.explain();
     const allDocs = await features.query; //entramos com uma querie no await, para pegarmos os resultados, e ele retorna outra querie/promise com resolve ou reject
 
     /****responses****/

@@ -19,7 +19,8 @@ const tourSchema = new mongoose.Schema(
       type: Number,
       default: 4.5,
       min: [1, 'A tour must be above 1.0'],
-      max: [5, 'A tour must be below 5.0']
+      max: [5, 'A tour must be below 5.0'],
+      set: val => Math.round(val * 10) / 10
     },
     price: {
       type: Number,
@@ -81,8 +82,8 @@ const tourSchema = new mongoose.Schema(
       default: false
     },
     startLocation: {
-      //GEOJson
-      types: {
+      // GeoJSON
+      type: {
         type: String,
         default: 'Point',
         enum: ['Point']
@@ -101,9 +102,33 @@ const tourSchema = new mongoose.Schema(
         coordinates: [Number],
         address: String,
         description: String,
-        day: String
+        day: Number
       }
     ],
+    // startLocation: {
+    //   //GEOJson
+    //   type: {
+    //     type: String,
+    //     default: 'Point',
+    //     enum: ['Point']
+    //   },
+    //   coordinates: [Number],
+    //   address: String,
+    //   description: String
+    // },
+    // locations: [
+    //   {
+    //     type: {
+    //       type: String,
+    //       default: 'Point',
+    //       enum: ['Point']
+    //     },
+    //     coordinates: [Number],
+    //     address: String,
+    //     description: String,
+    //     day: Number
+    //   }
+    // ],
     guides: [
       {
         type: mongoose.Schema.ObjectId,
@@ -116,6 +141,12 @@ const tourSchema = new mongoose.Schema(
     toObject: { virtuals: true }
   }
 );
+
+//tourSchema.index({ price: 1 });
+
+tourSchema.index({ price: 1, ratingsAverage: -1 });
+tourSchema.index({ slug: 1 });
+tourSchema.index({ startLocation: '2dsphere' });
 
 tourSchema.virtual('durationWeeks').get(function() {
   return this.duration / 7;
@@ -177,14 +208,14 @@ tourSchema.post(/^find/, function(docs, next) {
 
 //agreggation middleware
 
-tourSchema.pre('aggregate', function(next) {
-  this.pipeline().unshift({
-    $match: {
-      secretTours: { $ne: true }
-    }
-  });
-  next();
-});
+// tourSchema.pre('aggregate', function(next) {
+//   this.pipeline().unshift({
+//     $match: {
+//       secretTours: { $ne: true }
+//     }
+//   });
+//   next();
+// });
 const Tour = mongoose.model('Tour', tourSchema);
 
 module.exports = Tour;

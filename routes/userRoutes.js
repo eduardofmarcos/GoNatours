@@ -8,26 +8,50 @@ const router = express.Router();
 //Auth routes
 router.post('/signup', authController.signup);
 router.post('/login', authController.login);
-
 router.post('/forgotpassword', authController.forgotPassword);
 router.patch('/resetpassword/:token', authController.resetPassword);
+
+//Current User
 router.patch(
   '/updatepassword',
   authController.protect,
   authController.updatePassword
 );
 
-//Current User
+router.get(
+  '/me',
+  authController.protect,
+  userControllers.getMe,
+  userControllers.getSingleUser
+);
 router.patch('/updateme', authController.protect, userControllers.updateMe);
 router.delete('/deleteme', authController.protect, userControllers.deleteMe);
 
 //Admin privileges on User
-router.route('/').get(userControllers.getAllUsers);
+router
+  .route('/')
+  .get(
+    authController.protect,
+    authController.restrictTo('admin'),
+    userControllers.getAllUsers
+  );
 
 router
   .route('/:id')
-  .get(userControllers.getSingleUser)
-  .patch(userControllers.updateUser)
-  .delete(userControllers.deleteUser);
+  .get(
+    authController.protect,
+    authController.restrictTo('admin'),
+    userControllers.getSingleUser
+  )
+  .patch(
+    authController.protect,
+    authController.restrictTo('admin'),
+    userControllers.updateUser
+  )
+  .delete(
+    authController.protect,
+    authController.restrictTo('admin'),
+    userControllers.deleteUser
+  );
 
 module.exports = router;
