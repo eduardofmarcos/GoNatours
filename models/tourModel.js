@@ -186,6 +186,13 @@ tourSchema.pre(/^find/, function(next) {
   next();
 });
 
+// tourSchema.pre(/^find/, function(next) {
+//   this.populate({
+//     path: 'reviews'
+//   });
+//   next();
+// });
+
 tourSchema.post('save', function(doc, next) {
   console.log(doc);
   next();

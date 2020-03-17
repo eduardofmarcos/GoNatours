@@ -5,16 +5,23 @@ const helmet = require('helmet');
 const mongoSanitize = require('express-mongo-sanitize');
 const xss = require('xss-clean');
 const hpp = require('hpp');
+const path = require('path');
 
 const AppError = require('./utils/appError');
 const tourRouter = require('./routes/tourRoutes');
 const userRouter = require('./routes/userRoutes');
 const reviewRouter = require('./routes/reviewRoutes');
+const viewRouter = require('./routes/viewRoutes');
 const errorController = require('./controllers/errorController');
 
 const app = express();
 
+app.set('view engine', 'pug');
+app.set('views', path.join(__dirname, 'views'));
+
 //Global MiddleWares
+
+app.use(express.static(path.join(__dirname, 'public')));
 
 //set secure HTTP
 app.use(helmet());
@@ -54,13 +61,14 @@ app.use(
   })
 );
 //serving static files
-app.use(express.static(`${__dirname}/public`));
 
 app.use((req, res, next) => {
   req.time = new Date().toISOString();
   next();
 });
 
+//Routes
+app.use('/', viewRouter);
 app.use('/api/v1/users', userRouter);
 app.use('/api/v1/tours', tourRouter);
 app.use('/api/v1/reviews', reviewRouter);
