@@ -5,6 +5,8 @@ const helmet = require('helmet');
 const mongoSanitize = require('express-mongo-sanitize');
 const xss = require('xss-clean');
 const hpp = require('hpp');
+
+const cookieParser = require('cookie-parser');
 const path = require('path');
 
 const AppError = require('./utils/appError');
@@ -43,6 +45,9 @@ app.use('/api', limiter);
 //body parser - reading data from a body into req.body
 app.use(express.json({ limit: '10kb' }));
 
+//cookie parser
+app.use(cookieParser());
+
 //Data sanitization against noSQL query injections
 app.use(mongoSanitize());
 //Data sanitization against XSS attacks
@@ -64,6 +69,7 @@ app.use(
 
 app.use((req, res, next) => {
   req.time = new Date().toISOString();
+  console.log('the cookie of this section is: "', req.cookies);
   next();
 });
 
