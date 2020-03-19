@@ -88,6 +88,17 @@ exports.login = catchAsync(async (req, res, next) => {
   // });
 });
 
+exports.logOut = (req, res) => {
+  res.cookie('jwt', 'loggedout', {
+    expires: new Date(Date.now() + 10 * 1000),
+    httpOnly: true
+  });
+  res.status(200).json({
+    status: 'success',
+    message: 'Logged out'
+  });
+};
+
 exports.protect = catchAsync(async (req, res, next) => {
   let token;
 
@@ -125,6 +136,38 @@ exports.protect = catchAsync(async (req, res, next) => {
   req.user = currentUser;
   next();
 });
+
+//only for render pages. No erroes here
+exports.isLoogedIn = async (req, res, next) => {
+  //verify token
+  if (req.cookies.jwt) {
+    try {
+      const decoded = await promisify(jwt.verify)(
+        req.cookies.jwt,
+        process.env.JWT_SECRET
+      );
+      //checking if the user exist
+      const currentUser = await User.findById(decoded.id);
+
+      if (!currentUser) return next();
+
+      //checkig if user has changed password
+      if (currentUser.changedPasswordAfter(decoded.iat)) {
+        return next();
+      }
+
+      //There is a logged in user
+      //each pug template has access to res.locals variable
+      res.locals.user = currentUser;
+
+      return next();
+    } catch (err) {
+      return next();
+    }
+  }
+
+  next();
+};
 
 exports.restrictTo = (...roles) => {
   return (req, res, next) => {
