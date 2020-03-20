@@ -25,37 +25,61 @@ const handleJWTerror = err => {
     return new AppError('Expired token. Please log in again', 401);
 };
 
+/*************************DEVELOPMENT ERROR********************************* */
 /* eslint-disable no-else-return */
-const sendErrDev = (err, res) => {
-  return res.status(err.statusCode).json({
-    status: err.status,
-    error: err,
-    message: err.message,
-    stack: err.stack
+const sendErrDev = (err, req, res) => {
+  //A)API
+  if (req.originalUrl.startsWith('/api')) {
+    return res.status(err.statusCode).json({
+      status: err.status,
+      error: err,
+      message: err.message,
+      stack: err.stack
+    });
+  }
+  //B)RENDERED WEBSITE
+  console.log(err);
+  return res.status(err.statusCode).render('error', {
+    title: 'Something went wrong!',
+    msg: err.message
   });
 };
 
-const sendErrProd = (err, res) => {
+/*****************************PRODUCTION ERROR************************************ */
+const sendErrProd = (err, req, res) => {
   //operation trusted error: send the message to the client
   //console.log(err);
-  if (err.isOperational) {
-    return res.status(err.statusCode).json({
-      status: err.status,
-      message: err.message
-    });
-    // eslint-disable-next-line no-else-return
+  //A) API
+  if (req.originalUrl.startsWith('/api')) {
+    if (err.isOperational) {
+      return res.status(err.statusCode).json({
+        status: err.status,
+        message: err.message
+      });
+      // eslint-disable-next-line no-else-return
+    }
     // unstrusted programming error or unknown error: Doest not leak to client
-  } else {
-    //console.error('ERROR: ', err);
-    //console.log(err);
     //send generic message to client
     return res.status(404).json({
       status: 'Error',
       message: 'Something went very wrong :( !'
     });
   }
+  //B) RENDERED WEBSITE
+  //operation trusted error: send the message to the client
+  if (err.isOperational) {
+    return res.status(err.statusCode).render('error', {
+      title: 'Something went wrongaaaaaaaaaa!',
+      msg: err.message
+    });
+  }
+  // unstrusted programming error or unknown error: Doest not leak to client
+  //send generic message to client
+  return res.status(err.statusCode).render('error', {
+    title: 'Something went wrongbbbbbbbbbbbb!',
+    msg: 'Please Try Again Later :('
+  });
 };
-
 module.exports = (err, req, res, next) => {
   //console.log(err);
   err.statusCode = err.statusCode || 500;
@@ -64,11 +88,12 @@ module.exports = (err, req, res, next) => {
   //console.log(err.status);
 
   if (process.env.NODE_ENV === 'development') {
-    sendErrDev(err, res);
+    sendErrDev(err, req, res);
   }
   if (process.env.NODE_ENV === 'production') {
     let error = { ...err };
     console.log(error.name);
+    error.message = err.message;
     if (error.name === 'CastError') error = handleCastErrorDb(error);
     if (error.code === 11000) error = handleDuplicateErrorDB(error);
     if (error.name === 'ValidationError')
@@ -76,6 +101,6 @@ module.exports = (err, req, res, next) => {
     if (error.name === 'JsonWebTokenError') error = handleJWTerror(error);
     if (error.name === 'TokenExpiredError') error = handleJWTerror(error);
     //console.log(error);
-    sendErrProd(error, res);
+    sendErrProd(error, req, res);
   }
 };
