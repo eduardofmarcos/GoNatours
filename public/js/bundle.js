@@ -8437,7 +8437,7 @@ var login = /*#__PURE__*/function () {
             _context.next = 3;
             return (0, _axios.default)({
               method: 'POST',
-              url: 'http://localhost:3001/api/v1/users/login',
+              url: 'http://localhost:3000/api/v1/users/login',
               data: {
                 email: email,
                 password: password
@@ -8490,7 +8490,7 @@ var logout = /*#__PURE__*/function () {
             _context2.next = 3;
             return (0, _axios.default)({
               method: 'GET',
-              url: 'http://localhost:3001/api/v1/users/logout'
+              url: 'http://localhost:3000/api/v1/users/logout'
             });
 
           case 3:
@@ -8552,7 +8552,7 @@ var updateSettings = /*#__PURE__*/function () {
         switch (_context.prev = _context.next) {
           case 0:
             _context.prev = 0;
-            url = type === 'password' ? 'http://localhost:3001/api/v1/users/updatepassword' : 'http://localhost:3001/api/v1/users/updateme';
+            url = type === 'password' ? 'http://localhost:3000/api/v1/users/updatepassword' : 'http://localhost:3000/api/v1/users/updateme';
             _context.next = 4;
             return (0, _axios.default)({
               method: 'PATCH',
@@ -8562,7 +8562,6 @@ var updateSettings = /*#__PURE__*/function () {
 
           case 4:
             res = _context.sent;
-            console.log(data);
 
             if (res.data.status === 'success') {
               //alert('Logged in successfully!');
@@ -8572,20 +8571,20 @@ var updateSettings = /*#__PURE__*/function () {
               }, 1500);
             }
 
-            _context.next = 12;
+            _context.next = 11;
             break;
 
-          case 9:
-            _context.prev = 9;
+          case 8:
+            _context.prev = 8;
             _context.t0 = _context["catch"](0);
             (0, _alerts.showAlert)('error', _context.t0.response.data.message);
 
-          case 12:
+          case 11:
           case "end":
             return _context.stop();
         }
       }
-    }, _callee, null, [[0, 9]]);
+    }, _callee, null, [[0, 8]]);
   }));
 
   return function updateSettings(_x, _x2) {
@@ -8970,7 +8969,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "36035" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "45013" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

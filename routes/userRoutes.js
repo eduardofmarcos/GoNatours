@@ -25,7 +25,13 @@ router.get(
   userControllers.getMe,
   userControllers.getSingleUser
 );
-router.patch('/updateme', authController.protect, userControllers.updateMe);
+router.patch(
+  '/updateme',
+  authController.protect,
+  userControllers.uploadUserPhoto,
+  userControllers.resizeUserPhoto,
+  userControllers.updateMe
+);
 router.delete('/deleteme', authController.protect, userControllers.deleteMe);
 
 //Admin privileges on User

@@ -69,7 +69,7 @@ app.use(
 
 app.use((req, res, next) => {
   req.time = new Date().toISOString();
-  console.log('the cookie of this section is: "', req.cookies);
+  //console.log('the cookie of this section is: "', req.cookies);
   next();
 });
 
