@@ -5,6 +5,7 @@ import '@babel/polyfill';
 import { displayMap } from './mapBox';
 import { login, logout } from './login';
 import { updateSettings } from './updateSettings';
+import { bookTour } from './stripe';
 
 //Dom Elements
 const mapBox = document.getElementById('map');
@@ -12,6 +13,7 @@ const loginForm = document.querySelector('.form--login');
 const loggedBtn = document.querySelector('.nav__el--logout');
 const dataForm = document.querySelector('.form.form-user-data');
 const passwordForm = document.querySelector('.form-user-password');
+const bookBtn = document.getElementById('book-tour');
 //Values
 
 if (mapBox) {
@@ -39,10 +41,14 @@ if (loggedBtn) {
 if (dataForm) {
   dataForm.addEventListener('submit', e => {
     e.preventDefault();
-    const name = document.getElementById('name').value;
-    const email = document.getElementById('email').value;
 
-    updateSettings({ name, email }, 'data');
+    const form = new FormData();
+
+    form.append('name', document.getElementById('name').value);
+    form.append('email', document.getElementById('email').value);
+    form.append('photo', document.getElementById('photo').files[0]);
+    console.log(form);
+    updateSettings(form, 'data');
   });
 }
 
@@ -66,5 +72,14 @@ if (passwordForm) {
     document.getElementById('password-current').value = '';
     document.getElementById('password').value = '';
     document.getElementById('password-confirm').value = '';
+  });
+}
+
+/*********** Checking out button */
+if (bookBtn) {
+  bookBtn.addEventListener('click', async e => {
+    e.target.textContent = 'Processing...';
+    const tourToGet = e.target.dataset.tourId;
+    bookTour(tourToGet);
   });
 }

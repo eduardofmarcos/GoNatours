@@ -38,7 +38,7 @@ const sendErrDev = (err, req, res) => {
     });
   }
   //B)RENDERED WEBSITE
-  console.log(err);
+  //console.log(err);
   return res.status(err.statusCode).render('error', {
     title: 'Something went wrong!',
     msg: err.message
@@ -92,7 +92,7 @@ module.exports = (err, req, res, next) => {
   }
   if (process.env.NODE_ENV === 'production') {
     let error = { ...err };
-    console.log(error.name);
+    //console.log(error.name);
     error.message = err.message;
     if (error.name === 'CastError') error = handleCastErrorDb(error);
     if (error.code === 11000) error = handleDuplicateErrorDB(error);

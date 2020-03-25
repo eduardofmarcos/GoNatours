@@ -1,8 +1,63 @@
+const multer = require('multer');
+const sharp = require('sharp');
 const Tour = require('./../models/tourModel');
 const AppError = require('./../utils/appError');
 
 const catchAsync = require('./../utils/catchAsync');
 const factory = require('./../controllers/handlerFactory');
+
+const multerStorage = multer.memoryStorage();
+
+const multerFilter = (req, file, callback) => {
+  if (file.mimetype.startsWith('image')) {
+    callback(null, true);
+  } else {
+    callback(new AppError('The file is not support. Only images!', 400), false);
+  }
+};
+
+const upload = multer({
+  storage: multerStorage,
+  fileFilter: multerFilter
+});
+
+exports.uploadToursImages = upload.fields([
+  {
+    name: 'imageCover',
+    maxCount: 1
+  },
+  { name: 'images', maxCount: 3 }
+]);
+
+exports.resizeTourImages = catchAsync(async (req, res, next) => {
+  if (!req.files.imageCover || !req.files.images) return next();
+
+  req.body.imageCover = `tour-${req.params.id}-${Date.now()}-cover.jpeg`;
+
+  //1) Cover image
+  await sharp(req.files.imageCover[0].buffer)
+    .resize(2000, 1333)
+    .toFormat('jpeg')
+    .jpeg({ quality: 90 })
+    .toFile(`public/img/tours/${req.body.imageCover}`);
+
+  //2) images array
+  await Promise.all(
+    req.files.images.map(async (file, index) => {
+      const filename = `tour-${req.params.id}-${Date.now()}-${index + 1}.jpeg`;
+      req.body.images = [];
+      await sharp(file.buffer)
+        .resize(2000, 1333)
+        .toFormat('jpeg')
+        .jpeg({ quality: 90 })
+        .toFile(`public/img/tours/${filename}`);
+
+      req.body.images.push(filename);
+    })
+  );
+
+  next();
+});
 
 exports.aliasTopTours = (req, res, next) => {
   req.query.limit = 5;
@@ -42,7 +97,7 @@ exports.getTourStats = catchAsync(async (req, res, next) => {
       $sort: { avgPrice: 1 }
     }
   ]);
-  console.log('ok');
+
   res.status(200).json({
     status: 'success',
     timeAt: req.time,
@@ -102,7 +157,7 @@ exports.getTourWithin = catchAsync(async (req, res, next) => {
 
   const [latitude, longitude] = latlng.split(',');
 
-  console.log(latitude, longitude);
+  //console.log(latitude, longitude);
 
   const radius = unit === 'mi' ? distance / 3963.2 : distance / 6378.1;
 
