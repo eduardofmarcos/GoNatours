@@ -48,7 +48,7 @@ const sendErrDev = (err, req, res) => {
 /*****************************PRODUCTION ERROR************************************ */
 const sendErrProd = (err, req, res) => {
   //operation trusted error: send the message to the client
-  //console.log(err);
+  //console.error(err);
   //A) API
   if (req.originalUrl.startsWith('/api')) {
     if (err.isOperational) {
@@ -67,6 +67,7 @@ const sendErrProd = (err, req, res) => {
   }
   //B) RENDERED WEBSITE
   //operation trusted error: send the message to the client
+  //onsole.error(err);
   if (err.isOperational) {
     return res.status(err.statusCode).render('error', {
       title: 'Something went wrongaaaaaaaaaa!',
@@ -76,7 +77,7 @@ const sendErrProd = (err, req, res) => {
   // unstrusted programming error or unknown error: Doest not leak to client
   //send generic message to client
   return res.status(err.statusCode).render('error', {
-    title: 'Something went wrongbbbbbbbbbbbb!',
+    title: 'Something went wrong!!',
     msg: 'Please Try Again Later :('
   });
 };

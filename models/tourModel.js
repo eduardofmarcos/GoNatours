@@ -174,7 +174,7 @@ tourSchema.pre('save', function(next) {
 // });
 
 tourSchema.pre('save', function(next) {
-  console.log('Saving the document...');
+  //console.log('Saving the document...');
   next();
 });
 
@@ -194,7 +194,7 @@ tourSchema.pre(/^find/, function(next) {
 // });
 
 tourSchema.post('save', function(doc, next) {
-  console.log(doc);
+  //console.log(doc);
   next();
 });
 
@@ -207,11 +207,11 @@ tourSchema.pre(/^find/, function(next) {
   next();
 });
 
-tourSchema.post(/^find/, function(docs, next) {
-  //console.log(`It tooks ${new Date() - this.start} miliseconds`);
-  //console.log(docs);
-  next();
-});
+// tourSchema.post(/^find/, function(docs, next) {
+//   //console.log(`It tooks ${new Date() - this.start} miliseconds`);
+//   //console.log(docs);
+//   next();
+// });
 
 //agreggation middleware
 
