@@ -81,3 +81,21 @@ A RESTful API built with Node.js using MongoDB.
       "debug": "ndb server.js",
       "watch:js": "parcel watch ./public/js/index.js --out-dir ./public/js --out-file bundle.js",
       "build:js": "parcel build ./public/js/index.js --out-dir ./public/js --out-file bundle.js"
+      
+      
+#### Screenshots
+
+![Captura de Tela_20200326174020](https://user-images.githubusercontent.com/44758312/77696522-47dd2000-6f8c-11ea-81d9-0dfaa9c58a95.png)
+![Captura de Tela_20200326174037](https://user-images.githubusercontent.com/44758312/77696533-4ca1d400-6f8c-11ea-98cf-ab7abefec704.png)
+![Captura de Tela_20200326174046](https://user-images.githubusercontent.com/44758312/77696537-4e6b9780-6f8c-11ea-8d8f-838dbad33cd9.png)
+![Captura de Tela_20200326174049](https://user-images.githubusercontent.com/44758312/77696541-4f9cc480-6f8c-11ea-9160-8ca82cf816eb.png)
+![Captura de Tela_20200326174053](https://user-images.githubusercontent.com/44758312/77696546-51668800-6f8c-11ea-9234-091e8b57e0f9.png)
+![Captura de Tela_20200326174058](https://user-images.githubusercontent.com/44758312/77696548-53304b80-6f8c-11ea-98db-e7975265205f.png)
+![Captura de Tela_20200326174103](https://user-images.githubusercontent.com/44758312/77696550-54617880-6f8c-11ea-9e25-644efe827cc7.png)
+![Captura de Tela_20200326174112](https://user-images.githubusercontent.com/44758312/77696554-5592a580-6f8c-11ea-89e4-7a16475c0363.png)
+![Captura de Tela_20200326174121](https://user-images.githubusercontent.com/44758312/77696559-56c3d280-6f8c-11ea-926a-f199d82a852a.png)
+![Captura de Tela_20200326174151](https://user-images.githubusercontent.com/44758312/77696563-57f4ff80-6f8c-11ea-8f39-c49642394d07.png)
+![Captura de Tela_20200326174203](https://user-images.githubusercontent.com/44758312/77696568-59262c80-6f8c-11ea-9b92-e0609e69dd93.png)
+![Captura de Tela_20200326174207](https://user-images.githubusercontent.com/44758312/77696572-5a575980-6f8c-11ea-9f61-2bdd061b2dd4.png)
+
+
