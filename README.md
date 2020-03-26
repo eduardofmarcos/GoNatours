@@ -12,9 +12,17 @@ A RESTful API built with Node.js using MongoDB.
 * Payment with Stripe
 * Deployed on Heroku
 
+### Documentation:
+
+* https://bit.ly/3dyIi1G
+
+### Deployment:
+
+* https://gonatours.herokuapp.com/
+
 ##### Dependecies:
 
-    "author": "Eduardo Marcos/ Jonas Schmedtmann",
+    "author": "Eduardo Marcos",
      "license": "ISC",
      "dependencies": {
        "@babel/polyfill": "^7.8.7",
