@@ -72,7 +72,7 @@ A RESTful API built with Node.js using MongoDB.
 ##### How to run:
       "name": "natours",
       "version": "1.0.0",
-      "description": "learning node, express and mongoDB",
+      "description": "",
       "main": "app.js",
       "scripts": {
       "start": "node server.js",
