@@ -99,8 +99,6 @@ A RESTful API built with Node.js using MongoDB.
 
 ![Captura de Tela_20200326174058](https://user-images.githubusercontent.com/44758312/77696548-53304b80-6f8c-11ea-98db-e7975265205f.png)
 
-![Captura de Tela_20200326174103](https://user-images.githubusercontent.com/44758312/77696550-54617880-6f8c-11ea-9e25-644efe827cc7.png)
-
 ![Captura de Tela_20200326174112](https://user-images.githubusercontent.com/44758312/77696554-5592a580-6f8c-11ea-89e4-7a16475c0363.png)
 
 ![Captura de Tela_20200326174121](https://user-images.githubusercontent.com/44758312/77696559-56c3d280-6f8c-11ea-926a-f199d82a852a.png)
