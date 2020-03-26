@@ -68,3 +68,16 @@ A RESTful API built with Node.js using MongoDB.
      "engines": {
        "node": "^12"
      }
+     
+##### How to run:
+      "name": "natours",
+      "version": "1.0.0",
+      "description": "learning node, express and mongoDB",
+      "main": "app.js",
+      "scripts": {
+      "start": "node server.js",
+      "dev": "nodemon server.js",
+      "start:prod": "NODE_ENV=production nodemon server.js",
+      "debug": "ndb server.js",
+      "watch:js": "parcel watch ./public/js/index.js --out-dir ./public/js --out-file bundle.js",
+      "build:js": "parcel build ./public/js/index.js --out-dir ./public/js --out-file bundle.js"
