@@ -8,8 +8,9 @@ const router = express.Router();
 router.use(viewController.alerts);
 
 router.get(
-  "/?alert=welcome",
+  "/",
   // bookingController.createBookingCheckout,
+  viewController.alertsWelcome,
   authController.isLoogedIn,
   viewController.getOverview
 );

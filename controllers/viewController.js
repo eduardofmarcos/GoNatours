@@ -74,11 +74,9 @@ exports.alerts = (req, res, next) => {
   next();
 };
 
-exports.alerts = (req, res, next) => {
-  const { alert } = req.query;
-  if (alert === "welcome") {
-    res.locals.alert =
-      "Welcome to Natours. If you want to check all logged users functionalities, you can log in as visitor: Email: visitor@natours.io Password: 12345678.";
-  }
+exports.alertsWelcome = (req, res, next) => {
+  res.locals.alert =
+    "Welcome to Natours. If you want to check all logged users functionalities, you can log in as visitor: Email: visitor@natours.io Password: 12345678.";
+
   next();
 };
