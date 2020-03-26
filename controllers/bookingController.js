@@ -47,11 +47,8 @@ exports.getCheckoutSession = catchAsync(async (req, res, next) => {
 // });
 
 const createBookingCheckout = catchAsync(async session => {
-  const user = (
-    await User.findOne({
-      email: session.customer_email
-    })
-  ).id;
+  const userObj = await User.findOne({ email: session.customer_email });
+  const user = userObj._id;
   const price = session.line_items[0].amount / 100;
   const tour = session.client_reference_id;
   await Booking.create({ tour, user, price });
